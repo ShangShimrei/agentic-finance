@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 ﻿# Agentic Finance
 
 A modern AI-powered trading platform that combines multiple trading agents to make intelligent investment decisions.
@@ -130,6 +131,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Built with ❤️ for algorithmic trading
 
 =======
+=======
+>>>>>>> 6d2f32db (First commit: Project setup with README, frontend dashboard and agent implementations)
 ﻿# Agentic Finance
 
 A modern AI-powered trading platform that combines multiple trading agents to make intelligent investment decisions.
@@ -260,4 +263,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 Built with ❤️ for algorithmic trading
 
+<<<<<<< HEAD
 >>>>>>> aaf3d960 (First Commit: Project setup with README and basic structure)
+=======
+>>>>>>> 6d2f32db (First commit: Project setup with README, frontend dashboard and agent implementations)
