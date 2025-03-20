@@ -1,1 +1,59 @@
-﻿
+﻿{
+    "api_keys": {
+        "alpaca": {
+            "api_key": "YOUR_ALPACA_API_KEY",
+            "api_secret": "YOUR_ALPACA_API_SECRET",
+            "base_url": "https://paper-api.alpaca.markets"
+        },
+        "ollama": {
+            "base_url": "http://localhost:11434/api"
+        }
+    },
+    "agents": {
+        "buffet": {
+            "model": "llama3",
+            "active": true,
+            "weight": 1.0
+        },
+        "ackman": {
+            "model": "llama3",
+            "active": true,
+            "weight": 1.0
+        },
+        "fundamental": {
+            "model": "llama3",
+            "active": true,
+            "weight": 1.0
+        },
+        "sentiment": {
+            "model": "llama3",
+            "active": true,
+            "weight": 1.0
+        },
+        "technical": {
+            "model": "llama3",
+            "active": true,
+            "weight": 1.0
+        },
+        "valuation": {
+            "model": "llama3",
+            "active": true,
+            "weight": 1.0
+        }
+    },
+    "risk_manager": {
+        "max_position_size": 0.1,
+        "max_portfolio_risk": 0.2,
+        "value_at_risk_confidence": 0.95
+    },
+    "portfolio_manager": {
+        "rebalance_frequency": "daily",
+        "max_positions": 20,
+        "base_currency": "USD"
+    },
+    "execution": {
+        "order_type": "market",
+        "time_in_force": "day"
+    },
+    "symbols": ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
+}
