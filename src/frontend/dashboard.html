@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YRS Agentic Finance | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        :root {
+            --bg-dark: #0a0e14;
+            --bg-card: #141922;
+            --bg-sidebar: #0f1219;
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+            --accent-blue: #3a7bd5;
+            --accent-gradient: linear-gradient(to right, #3a7bd5, #00d2ff);
+            --red: #ff5c5c;
+            --green: #4caf50;
+            --yellow: #ffc107;
+            --purple: #7c5dc7;
+            --border-color: rgba(255,255,255,0.08);
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: var(--bg-sidebar);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+            background: rgba(58, 123, 213, 0.1);
+            border-radius: 8px;
+        }
+        
+        .menu {
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255,255,255,0.03);
+        }
+        
+        .menu-item.active {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.05);
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .menu-item-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .badge {
+            background: var(--red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 9999px;
+            margin-left: auto;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            padding: 1.5rem 2rem;
+            width: calc(100% - 240px);
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .search-bar {
+            position: relative;
+            width: 300px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.65rem 1rem 0.65rem 2.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .card-tools {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .tool-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tool-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .balance-card {
+            grid-column: span 3;
+        }
+        
+        .balance-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .change-value {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .positive {
+            color: var(--green);
+        }
+        
+        .negative {
+            color: var(--red);
+        }
+        
+        .chart-container {
+            height: 180px;
+            margin-top: 1rem;
+            position: relative;
+        }
+        
+        .asset-card {
+            position: relative;
+        }
+        
+        .asset-logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .btc-logo {
+            background-color: #f7931a;
+            color: white;
+        }
+        
+        .eth-logo {
+            background-color: #627eea;
+            color: white;
+        }
+        
+        .sol-logo {
+            background-color: #14f195;
+            color: #2a2a72;
+        }
+        
+        .asset-name {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+        
+        .asset-full-name {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+        
+        .asset-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .asset-amount {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .asset-chart {
+            height: 50px;
+            margin-top: 1rem;
+        }
+        
+        /* Tables */
+        .table-section {
+            margin-top: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .select-container {
+            position: relative;
+        }
+        
+        .select-styled {
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            appearance: none;
+        }
+        
+        .select-arrow {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        td {
+            padding: 1rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .action-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .action-btn.buy {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--green);
+        }
+        
+        .action-btn.sell {
+            background: rgba(255, 92, 92, 0.1);
+            color: var(--red);
+        }
+        
+        .table-card {
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .balance-card {
+                grid-column: span 2;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .logo span, .menu-item span {
+                display: none;
+            }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 0.75rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .balance-card {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <span>YRS Finance</span>
+            </div>
+        </div>
+        
+        <div class="menu">
+            <a href="#" class="menu-item active">
+                <div class="menu-item-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <span>My Assets</span>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <span>Markets</span>
+                <div class="badge">New</div>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <span>Portfolio</span>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <span>Academy</span>
+            </a>
+            <a href="#" class="menu-item">
+                <div class="menu-item-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <span>AI Tools</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="user-info">
+                <div class="avatar">A</div>
+                <div>Anthony Mendez</div>
+            </div>
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" placeholder="Search here...">
+            </div>
+        </div>
+        
+        <!-- Balance Section -->
+        <div class="grid-container">
+            <div class="card balance-card">
+                <div class="card-header">
+                    <div class="card-title">My Balance</div>
+                    <div class="card-tools">
+                        <div class="select-container">
+                            <select class="select-styled">
+                                <option>24h</option>
+                                <option>7d</option>
+                                <option>30d</option>
+                                <option>1y</option>
+                            </select>
+                            <i class="fas fa-chevron-down select-arrow"></i>
+                        </div>
+                        <div class="tool-btn">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </div>
+                        <div class="tool-btn">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="balance-value">$164,802.43</div>
+                <div class="change-value positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>$14,324.27 (10.08%)</span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                    Overall portfolio performance since last month
+                </div>
+                
+                <div class="chart-container">
+                    <!-- Replace with actual chart implementation -->
+                    <div style="position: absolute; width: 100%; height: 100%; background: url('https://via.placeholder.com/1000x300/141922/3a7bd5?text=Balance+Chart') no-repeat center center; background-size: cover; opacity: 0.7; border-radius: 8px;"></div>
+                </div>
+            </div>
+            
+            <!-- Crypto Assets -->
+            <div class="card asset-card">
+                <div class="asset-logo btc-logo">
+                    <i class="fab fa-bitcoin"></i>
+                </div>
+                <div class="asset-name">Bitcoin</div>
+                <div class="asset-full-name">BTC • 0.823075</div>
+                <div class="asset-price">0.823075</div>
+                <div class="asset-amount">≈ $41,532.89</div>
+                
+                <div class="change-value negative" style="margin-top: 0.5rem;">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>1.65%</span>
+                </div>
+                
+                <div class="asset-chart">
+                    <!-- Replace with actual chart implementation -->
+                    <div style="width: 100%; height: 100%; background: url('https://via.placeholder.com/300x50/141922/ff5c5c?text=BTC+Chart') no-repeat center center; background-size: cover; border-radius: 8px;"></div>
+                </div>
+            </div>
+            
+            <div class="card asset-card">
+                <div class="asset-logo eth-logo">
+                    <i class="fab fa-ethereum"></i>
+                </div>
+                <div class="asset-name">Ethereum</div>
+                <div class="asset-full-name">ETH • 2.9383</div>
+                <div class="asset-price">2.9383</div>
+                <div class="asset-amount">≈ $8,743.21</div>
+                
+                <div class="change-value negative" style="margin-top: 0.5rem;">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>0.84%</span>
+                </div>
+                
+                <div class="asset-chart">
+                    <!-- Replace with actual chart implementation -->
+                    <div style="width: 100%; height: 100%; background: url('https://via.placeholder.com/300x50/141922/627eea?text=ETH+Chart') no-repeat center center; background-size: cover; border-radius: 8px;"></div>
+                </div>
+            </div>
+            
+            <div class="card asset-card">
+                <div class="asset-logo sol-logo">
+                    <i class="fas fa-sun"></i>
+                </div>
+                <div class="asset-name">Solana</div>
+                <div class="asset-full-name">SOL • 419.68</div>
+                <div class="asset-price">419.68</div>
+                <div class="asset-amount">≈ $31,476.35</div>
+                
+                <div class="change-value negative" style="margin-top: 0.5rem;">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>3.09%</span>
+                </div>
+                
+                <div class="asset-chart">
+                    <!-- Replace with actual chart implementation -->
+                    <div style="width: 100%; height: 100%; background: url('https://via.placeholder.com/300x50/141922/14f195?text=SOL+Chart') no-repeat center center; background-size: cover; border-radius: 8px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Markets Section -->
+        <div class="table-section">
+            <div class="section-header">
+                <div class="section-title">Markets</div>
+                <div class="section-actions">
+                    <div class="select-container">
+                        <select class="select-styled">
+                            <option>All Currencies</option>
+                            <option>BTC</option>
+                            <option>ETH</option>
+                            <option>SOL</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card table-card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Price</th>
+                                <th>Change</th>
+                                <th>Market Cap</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div class="asset-logo btc-logo" style="width: 28px; height: 28px; font-size: 0.9rem; margin-bottom: 0;">
+                                        <i class="fab fa-bitcoin"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 500;">Bitcoin</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">BTC</div>
+                                    </div>
+                                </td>
+                                <td>$50,432.12</td>
+                                <td class="negative">-1.65%</td>
+                                <td>$956.4B</td>
+                                <td>
+                                    <div class="action-cell">
+                                        <button class="action-btn buy">Buy</button>
+                                        <button class="action-btn sell">Sell</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div class="asset-logo eth-logo" style="width: 28px; height: 28px; font-size: 0.9rem; margin-bottom: 0;">
+                                        <i class="fab fa-ethereum"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 500;">Ethereum</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">ETH</div>
+                                    </div>
+                                </td>
+                                <td>$2,975.64</td>
+                                <td class="negative">-0.84%</td>
+                                <td>$357.8B</td>
+                                <td>
+                                    <div class="action-cell">
+                                        <button class="action-btn buy">Buy</button>
+                                        <button class="action-btn sell">Sell</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div class="asset-logo sol-logo" style="width: 28px; height: 28px; font-size: 0.9rem; margin-bottom: 0;">
+                                        <i class="fas fa-sun"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 500;">Solana</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-secondary);">SOL</div>
+                                    </div>
+                                </td>
+                                <td>$75.01</td>
+                                <td class="negative">-3.09%</td>
+                                <td>$31.2B</td>
+                                <td>
+                                    <div class="action-cell">
+                                        <button class="action-btn buy">Buy</button>
+                                        <button class="action-btn sell">Sell</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Transactions Section -->
+        <div class="table-section">
+            <div class="section-header">
+                <div class="section-title">Recent Transactions</div>
+                <div class="section-actions">
+                    <div class="select-container">
+                        <select class="select-styled">
+                            <option>All Transactions</option>
+                            <option>Buy</option>
+                            <option>Sell</option>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card table-card">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Asset</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2023-06-15</td>
+                                <td style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div class="asset-logo btc-logo" style="width: 28px; height: 28px; font-size: 0.9rem; margin-bottom: 0;">
+                                        <i class="fab fa-bitcoin"></i>
+                                    </div>
+                                    <div>Bitcoin (BTC)</div>
+                                </td>
+                                <td style="color: var(--green);">Buy</td>
+                                <td>0.25 BTC</td>
+                                <td>$48,652.30</td>
+                                <td style="color: var(--green);">Completed</td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-12</td>
+                                <td style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div class="asset-logo eth-logo" style="width: 28px; height: 28px; font-size: 0.9rem; margin-bottom: 0;">
+                                        <i class="fab fa-ethereum"></i>
+                                    </div>
+                                    <div>Ethereum (ETH)</div>
+                                </td>
+                                <td style="color: var(--red);">Sell</td>
+                                <td>1.5 ETH</td>
+                                <td>$3,025.75</td>
+                                <td style="color: var(--green);">Completed</td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-10</td>
+                                <td style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <div class="asset-logo sol-logo" style="width: 28px; height: 28px; font-size: 0.9rem; margin-bottom: 0;">
+                                        <i class="fas fa-sun"></i>
+                                    </div>
+                                    <div>Solana (SOL)</div>
+                                </td>
+                                <td style="color: var(--green);">Buy</td>
+                                <td>25 SOL</td>
+                                <td>$78.42</td>
+                                <td style="color: var(--green);">Completed</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" integrity="sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==" crossorigin="anonymous"></script>
+</body>
+</html> 

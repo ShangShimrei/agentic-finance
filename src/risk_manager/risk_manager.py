@@ -1,226 +1,135 @@
-﻿import logging
-import numpy as np
-from typing import Dict, List, Any
+"""
+Risk Manager module that aggregates and risk-adjusts trading signals.
+"""
+import logging
+from typing import Dict, Any, List
 
 logger = logging.getLogger(__name__)
 
 class RiskManager:
     """
-    Risk Manager that aggregates trading signals and adjusts them based on risk metrics.
-    
-    This component:
-    - Aggregates trading signals from all agents
-    - Evaluates portfolio risk using metrics like Value-at-Risk
-    - Applies position size limits and risk constraints
-    - Generates risk-adjusted signals for the Portfolio Manager
+    Risk Manager for aggregating and adjusting trading signals based on risk metrics.
     """
     
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, risk_threshold: float = 0.5):
         """
-        Initialize the Risk Manager with configuration settings.
+        Initialize the Risk Manager.
         
         Args:
-            config: Dictionary containing configuration settings
+            risk_threshold: Threshold for acceptable risk (0.0 to 1.0)
         """
-        self.config = config
-        self.max_position_size = config['risk_manager']['max_position_size']
-        self.max_portfolio_risk = config['risk_manager']['max_portfolio_risk']
-        self.var_confidence = config['risk_manager']['value_at_risk_confidence']
-        
-        # Store historical portfolio values for risk calculations
-        self.portfolio_history = []
-        
-        # Keep track of current positions and their sizes
-        self.current_positions = {}
-        
-        logger.info("Initialized Risk Manager")
+        self.risk_threshold = risk_threshold
+        logger.info(f"Initializing Risk Manager with risk threshold of {risk_threshold}")
     
-    def process_signals(self, agent_signals: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    def calculate_var(self, portfolio: Dict[str, Any], confidence_level: float = 0.95) -> float:
         """
-        Process signals from all agents and adjust them based on risk metrics.
+        Calculate Value at Risk (VaR) for the portfolio.
         
         Args:
-            agent_signals: Dictionary mapping agent names to their signal dictionaries
+            portfolio: Current portfolio holdings and metrics
+            confidence_level: Confidence level for VaR calculation (typically 0.95 or 0.99)
             
         Returns:
-            Dictionary mapping symbols to risk-adjusted signals
+            VaR value
         """
-        # First, aggregate signals by symbol
-        aggregated_signals = self._aggregate_signals_by_symbol(agent_signals)
+        # Placeholder implementation
+        # In a real implementation, this would use historical data and statistical methods
+        # to calculate VaR based on portfolio composition and historical volatility
         
-        # Then, apply risk constraints to each signal
-        risk_adjusted_signals = self._apply_risk_constraints(aggregated_signals)
+        # Mock implementation returns a simple percentage of portfolio value
+        portfolio_value = portfolio.get("total_value", 0)
+        mock_var = portfolio_value * 0.05  # 5% VaR at the given confidence level
         
-        return risk_adjusted_signals
+        return mock_var
     
-    def _aggregate_signals_by_symbol(self, agent_signals: Dict[str, Dict[str, Dict[str, Any]]]) -> Dict[str, Dict[str, Any]]:
+    def adjust_signals(self, trading_signals: List[Dict[str, Any]], portfolio: Dict[str, Any]) -> List[Dict[str, Any]]:
         """
-        Aggregate signals from all agents by symbol.
+        Adjust trading signals based on risk metrics.
         
         Args:
-            agent_signals: Dictionary mapping agent names to their signal dictionaries
+            trading_signals: List of trading signals from different agents
+            portfolio: Current portfolio information
             
         Returns:
-            Dictionary mapping symbols to aggregated signals
+            List of risk-adjusted trading signals
         """
-        # Initialize aggregated signals dictionary
-        aggregated_signals = {}
+        logger.info(f"Adjusting {len(trading_signals)} trading signals based on risk metrics")
         
-        # For each agent
-        for agent_name, agent_signal_dict in agent_signals.items():
-            # For each symbol that this agent has a signal for
-            for symbol, signal in agent_signal_dict.items():
-                # If we haven't seen this symbol yet, initialize its entry
-                if symbol not in aggregated_signals:
-                    aggregated_signals[symbol] = {
-                        'buy_confidence': 0.0,
-                        'sell_confidence': 0.0,
-                        'hold_confidence': 0.0,
-                        'reasoning': [],
-                        'agents': []
-                    }
-                
-                # Add this agent's signal to the aggregated signal
-                action = signal['action']
-                confidence = signal['confidence']
-                
-                if action == 'BUY':
-                    aggregated_signals[symbol]['buy_confidence'] += confidence
-                elif action == 'SELL':
-                    aggregated_signals[symbol]['sell_confidence'] += confidence
-                elif action == 'HOLD':
-                    aggregated_signals[symbol]['hold_confidence'] += confidence
-                
-                # Store the reasoning and agent name
-                aggregated_signals[symbol]['reasoning'].append(f"{agent_name}: {signal['reasoning']}")
-                aggregated_signals[symbol]['agents'].append(agent_name)
+        # Calculate portfolio risk metrics
+        var = self.calculate_var(portfolio)
+        portfolio_value = portfolio.get("total_value", 0)
+        current_risk_level = var / portfolio_value if portfolio_value else 0
         
-        # Normalize the confidences
-        for symbol, signal in aggregated_signals.items():
-            num_agents = len(signal['agents'])
-            if num_agents > 0:
-                signal['buy_confidence'] /= num_agents
-                signal['sell_confidence'] /= num_agents
-                signal['hold_confidence'] /= num_agents
-            
-            # Determine the final action based on the highest confidence
-            confidences = {
-                'BUY': signal['buy_confidence'],
-                'SELL': signal['sell_confidence'],
-                'HOLD': signal['hold_confidence']
-            }
-            signal['action'] = max(confidences, key=confidences.get)
-            signal['confidence'] = confidences[signal['action']]
+        adjusted_signals = []
         
-        return aggregated_signals
-    
-    def _apply_risk_constraints(self, aggregated_signals: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-        """
-        Apply risk constraints to the aggregated signals.
-        
-        Args:
-            aggregated_signals: Dictionary mapping symbols to aggregated signals
-            
-        Returns:
-            Dictionary mapping symbols to risk-adjusted signals
-        """
-        risk_adjusted_signals = {}
-        
-        # Calculate the overall portfolio risk
-        portfolio_risk = self._calculate_portfolio_risk()
-        
-        # If portfolio risk exceeds the maximum allowed risk, adjust all signals
-        risk_scaling_factor = 1.0
-        if portfolio_risk > self.max_portfolio_risk:
-            risk_scaling_factor = self.max_portfolio_risk / portfolio_risk
-            logger.warning(f"Portfolio risk ({portfolio_risk:.2f}) exceeds maximum ({self.max_portfolio_risk:.2f}). "
-                          f"Scaling signals by {risk_scaling_factor:.2f}")
-        
-        # Apply risk constraints to each signal
-        for symbol, signal in aggregated_signals.items():
-            # Create a copy of the signal to adjust
+        for signal in trading_signals:
+            # Deep copy of the original signal
             adjusted_signal = signal.copy()
             
-            # Adjust the confidence based on the risk scaling factor
-            adjusted_signal['confidence'] *= risk_scaling_factor
+            # Risk adjustment logic
+            if current_risk_level > self.risk_threshold:
+                # Higher risk environment - reduce confidence for BUY signals
+                if signal["action"] == "BUY":
+                    risk_factor = min(1.0, current_risk_level / self.risk_threshold)
+                    adjusted_signal["confidence"] = signal["confidence"] * (1 - (risk_factor * 0.3))
+                    adjusted_signal["rationale"] = f"Risk-adjusted: {signal['rationale']} (high risk environment)"
+                
+                # Increase confidence for SELL signals in high risk environment
+                elif signal["action"] == "SELL":
+                    risk_factor = min(1.0, current_risk_level / self.risk_threshold)
+                    adjusted_signal["confidence"] = min(0.95, signal["confidence"] * (1 + (risk_factor * 0.2)))
+                    adjusted_signal["rationale"] = f"Risk-adjusted: {signal['rationale']} (high risk environment)"
             
-            # Apply position size limits
-            if signal['action'] == 'BUY' and (symbol in self.current_positions or 
-                                              self._would_exceed_position_limit(symbol)):
-                # If buying would exceed position limits, change to HOLD
-                adjusted_signal['action'] = 'HOLD'
-                adjusted_signal['confidence'] = max(signal['hold_confidence'], 0.5)
-                adjusted_signal['reasoning'].append(
-                    f"Risk Manager: Position size would exceed limit of {self.max_position_size*100:.0f}%")
-            
-            # Add risk assessment to the reasoning
-            adjusted_signal['reasoning'].append(
-                f"Risk Manager: Portfolio risk at {portfolio_risk:.2f}, scaling factor {risk_scaling_factor:.2f}")
-            
-            # Store the adjusted signal
-            risk_adjusted_signals[symbol] = adjusted_signal
+            adjusted_signals.append(adjusted_signal)
         
-        return risk_adjusted_signals
+        return adjusted_signals
     
-    def _calculate_portfolio_risk(self) -> float:
+    def aggregate_signals(self, trading_signals: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
-        Calculate the overall portfolio risk using Value-at-Risk.
-        
-        For the prototype, this is a simplified calculation.
-        In a real implementation, this would use historical returns and proper VaR calculations.
-        
-        Returns:
-            Portfolio risk as a number between 0 and 1
-        """
-        # If we don't have enough history, return a default value
-        if len(self.portfolio_history) < 30:
-            return 0.1  # Default risk value
-        
-        # Calculate daily returns
-        returns = np.diff(self.portfolio_history) / self.portfolio_history[:-1]
-        
-        # Calculate Value-at-Risk
-        var = -np.percentile(returns, 100 * (1 - self.var_confidence))
-        
-        # Normalize to a value between 0 and 1
-        normalized_risk = min(var * 10, 1.0)  # Scale VaR to a 0-1 range
-        
-        return normalized_risk
-    
-    def _would_exceed_position_limit(self, symbol: str) -> bool:
-        """
-        Check if buying a symbol would exceed the maximum position size.
+        Aggregate multiple trading signals into a single consensus signal.
         
         Args:
-            symbol: The symbol to check
+            trading_signals: List of trading signals from different agents
             
         Returns:
-            True if buying would exceed position limits, False otherwise
+            Aggregated signal representing consensus view
         """
-        # For the prototype, we'll assume equal position sizes
-        # In a real implementation, this would consider actual position sizes and cash available
-        num_positions = len(self.current_positions)
-        if num_positions >= self.config['portfolio_manager']['max_positions']:
-            return True
+        logger.info(f"Aggregating {len(trading_signals)} trading signals")
         
-        # Check if adding this position would exceed the max position size
-        if symbol not in self.current_positions:
-            new_position_size = 1.0 / (num_positions + 1)
-            return new_position_size > self.max_position_size
+        if not trading_signals:
+            return {"action": "HOLD", "confidence": 0, "rationale": "No signals available"}
         
-        return False
-    
-    def update_portfolio_state(self, portfolio_value: float, positions: Dict[str, float]):
-        """
-        Update the risk manager's state with the current portfolio value and positions.
+        # Extract ticker (assuming all signals are for the same ticker)
+        ticker = trading_signals[0].get("ticker", "UNKNOWN")
         
-        Args:
-            portfolio_value: The current total portfolio value
-            positions: Dictionary mapping symbols to position sizes (as percentage of portfolio)
-        """
-        self.portfolio_history.append(portfolio_value)
-        self.current_positions = positions
+        # Count actions and calculate weighted confidence
+        action_counts = {"BUY": 0, "SELL": 0, "HOLD": 0}
+        action_confidences = {"BUY": 0.0, "SELL": 0.0, "HOLD": 0.0}
+        agents = []
         
-        # Keep only the last 100 days of history
-        if len(self.portfolio_history) > 100:
-            self.portfolio_history = self.portfolio_history[-100:]
+        for signal in trading_signals:
+            action = signal["action"]
+            confidence = signal["confidence"]
+            
+            action_counts[action] += 1
+            action_confidences[action] += confidence
+            agents.append(signal["agent"])
+        
+        # Determine consensus action (highest confidence sum)
+        consensus_action = max(action_confidences, key=action_confidences.get)
+        
+        # Calculate aggregate confidence
+        total_signals = len(trading_signals)
+        consensus_count = action_counts[consensus_action]
+        consensus_confidence = action_confidences[consensus_action] / total_signals
+        
+        # Generate rationale
+        rationale = f"Consensus of {consensus_count}/{total_signals} agents: {', '.join(agents)}"
+        
+        return {
+            "action": consensus_action,
+            "confidence": consensus_confidence,
+            "ticker": ticker,
+            "rationale": rationale,
+            "agents": agents
+        } 

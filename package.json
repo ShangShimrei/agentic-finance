@@ -1,0 +1,24 @@
+{
+  "name": "yrs-agentic-finance",
+  "version": "1.0.0",
+  "description": "A comprehensive financial platform powered by AI agents",
+  "main": "index.js",
+  "scripts": {
+    "start": "python run_app.py",
+    "start:frontend": "cd src/frontend && python unified_server.py",
+    "build:dashboard": "cd src/frontend/react-dashboard && npm run build",
+    "dev:dashboard": "cd src/frontend/react-dashboard && npm run dev"
+  },
+  "keywords": [
+    "finance",
+    "trading",
+    "ai",
+    "agents",
+    "mcp"
+  ],
+  "author": "YRS Agentic Finance Team",
+  "license": "MIT",
+  "dependencies": {
+    "chartjs-chart-financial": "^0.2.1"
+  }
+}

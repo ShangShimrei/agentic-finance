@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="1000" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1000" height="600" fill="#0a0e14"/>
+  
+  <!-- Styles -->
+  <defs>
+    <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3a7bd5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00d2ff;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur"/>
+      <feOffset in="blur" dx="0" dy="0" result="offsetBlur"/>
+      <feComponentTransfer in="offsetBlur" result="shadow">
+        <feFuncA type="linear" slope="0.5"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Title -->
+  <text x="500" y="50" font-family="'Inter', sans-serif" font-size="24" fill="#ffffff" text-anchor="middle" font-weight="bold">YRS Agentic Finance Workflow</text>
+  
+  <!-- Main workflow container -->
+  <rect x="50" y="100" width="900" height="400" rx="15" ry="15" fill="#111823" stroke="#333" stroke-width="1"/>
+  
+  <!-- Workflow boxes -->
+  <!-- Data Layer -->
+  <g transform="translate(100, 180)" filter="url(#shadow)">
+    <rect x="0" y="0" width="120" height="100" rx="10" ry="10" fill="#1e293b" stroke="url(#blue-gradient)" stroke-width="2"/>
+    <text x="60" y="30" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Data</text>
+    <text x="60" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Providers</text>
+    <text x="60" y="80" font-family="'Inter', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">Market Data</text>
+  </g>
+  
+  <!-- Agent Layer -->
+  <g transform="translate(270, 180)" filter="url(#shadow)">
+    <rect x="0" y="0" width="120" height="100" rx="10" ry="10" fill="#1e293b" stroke="url(#blue-gradient)" stroke-width="2"/>
+    <text x="60" y="30" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Trading</text>
+    <text x="60" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Agents</text>
+    <text x="60" y="80" font-family="'Inter', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">Signal Generation</text>
+  </g>
+  
+  <!-- MCP Layer -->
+  <g transform="translate(440, 180)" filter="url(#shadow)">
+    <rect x="0" y="0" width="120" height="100" rx="10" ry="10" fill="#1e293b" stroke="url(#blue-gradient)" stroke-width="2"/>
+    <text x="60" y="30" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Model Context</text>
+    <text x="60" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Protocol</text>
+    <text x="60" y="80" font-family="'Inter', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">Coordination</text>
+  </g>
+  
+  <!-- Risk Layer -->
+  <g transform="translate(610, 180)" filter="url(#shadow)">
+    <rect x="0" y="0" width="120" height="100" rx="10" ry="10" fill="#1e293b" stroke="url(#blue-gradient)" stroke-width="2"/>
+    <text x="60" y="30" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Risk</text>
+    <text x="60" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Manager</text>
+    <text x="60" y="80" font-family="'Inter', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">Signal Assessment</text>
+  </g>
+  
+  <!-- Portfolio Layer -->
+  <g transform="translate(780, 180)" filter="url(#shadow)">
+    <rect x="0" y="0" width="120" height="100" rx="10" ry="10" fill="#1e293b" stroke="url(#blue-gradient)" stroke-width="2"/>
+    <text x="60" y="30" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Portfolio</text>
+    <text x="60" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Manager</text>
+    <text x="60" y="80" font-family="'Inter', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">Trade Execution</text>
+  </g>
+  
+  <!-- Bottom layers -->
+  <!-- Action Layer -->
+  <g transform="translate(270, 320)" filter="url(#shadow)">
+    <rect x="0" y="0" width="120" height="100" rx="10" ry="10" fill="#1e293b" stroke="url(#blue-gradient)" stroke-width="2"/>
+    <text x="60" y="30" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Actions</text>
+    <text x="60" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Layer</text>
+    <text x="60" y="80" font-family="'Inter', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">Order Execution</text>
+  </g>
+  
+  <!-- Dashboard Layer -->
+  <g transform="translate(610, 320)" filter="url(#shadow)">
+    <rect x="0" y="0" width="120" height="100" rx="10" ry="10" fill="#1e293b" stroke="url(#blue-gradient)" stroke-width="2"/>
+    <text x="60" y="30" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Frontend</text>
+    <text x="60" y="50" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle" font-weight="bold">Dashboard</text>
+    <text x="60" y="80" font-family="'Inter', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">Visualization</text>
+  </g>
+  
+  <!-- Connecting lines (workflow) -->
+  <!-- Top row connections -->
+  <line x1="220" y1="230" x2="270" y2="230" stroke="url(#blue-gradient)" stroke-width="2"/>
+  <line x1="390" y1="230" x2="440" y2="230" stroke="url(#blue-gradient)" stroke-width="2"/>
+  <line x1="560" y1="230" x2="610" y2="230" stroke="url(#blue-gradient)" stroke-width="2"/>
+  <line x1="730" y1="230" x2="780" y2="230" stroke="url(#blue-gradient)" stroke-width="2"/>
+  
+  <!-- Vertical connections -->
+  <line x1="330" y1="280" x2="330" y2="320" stroke="url(#blue-gradient)" stroke-width="2"/>
+  <line x1="670" y1="280" x2="670" y2="320" stroke="url(#blue-gradient)" stroke-width="2"/>
+  
+  <!-- MCP connections to all parts -->
+  <path d="M 500 280 C 500 300, 500 300, 500 350 C 500 400, 400 400, 330 400" stroke="url(#blue-gradient)" stroke-width="2" fill="none"/>
+  <path d="M 500 280 C 500 300, 500 300, 500 350 C 500 400, 600 400, 670 400" stroke="url(#blue-gradient)" stroke-width="2" fill="none"/>
+  
+  <!-- Workflow arrows -->
+  <polygon points="265,230 270,225 270,235" fill="#00d2ff"/>
+  <polygon points="435,230 440,225 440,235" fill="#00d2ff"/>
+  <polygon points="605,230 610,225 610,235" fill="#00d2ff"/>
+  <polygon points="775,230 780,225 780,235" fill="#00d2ff"/>
+  <polygon points="330,315 325,320 335,320" fill="#00d2ff"/>
+  <polygon points="670,315 665,320 675,320" fill="#00d2ff"/>
+  
+  <!-- Legend -->
+  <g transform="translate(100, 500)">
+    <rect x="0" y="0" width="800" height="50" rx="5" ry="5" fill="#111823" stroke="#333" stroke-width="1"/>
+    <text x="400" y="20" font-family="'Inter', sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">Data Flow: Data → Agents → MCP → Risk → Portfolio → Actions → Dashboard</text>
+    <text x="400" y="40" font-family="'Inter', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">Model Context Protocol (MCP) coordinates the entire system</text>
+  </g>
+</svg> 
