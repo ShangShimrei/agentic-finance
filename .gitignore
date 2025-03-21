@@ -1,6 +1,5 @@
-<<<<<<< HEAD
 # Dependencies
-node_modules
+node_modules/
 **/node_modules
 **/node_modules/.cache
 **/node_modules/.cache/**
@@ -26,10 +25,11 @@ node_modules
 **/.env
 
 # Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-*.log
 
 # Python
 __pycache__/
@@ -37,8 +37,10 @@ __pycache__/
 *$py.class
 *.so
 .Python
+env/
 build/
 develop-eggs/
+dist/
 downloads/
 eggs/
 .eggs/
@@ -47,7 +49,6 @@ lib64/
 parts/
 sdist/
 var/
-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -56,7 +57,6 @@ wheels/
 venv/
 ENV/
 env/
-.env/
 
 # IDE
 .idea/
@@ -76,83 +76,6 @@ env/
 .cursor/
 conda-meta/
 etc/
-=======
-# Dependencies
-node_modules
-**/node_modules
-**/node_modules/.cache
-**/node_modules/.cache/**
-.pnp
-.pnp.js
 
-# Testing
-/coverage
-
-# Production
-/build
-/dist
-**/build
-**/dist
-
-# Misc
-.DS_Store
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-**/.env
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-*.log
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual Environment
-venv/
-ENV/
-env/
-.env/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Cache files
-.cache/
-**/.cache/
-**/.cache/**
-
-# Local development
-.cursor/
-conda-meta/
-etc/
->>>>>>> 6d2f32db (First commit: Project setup with README, frontend dashboard and agent implementations)
-.nonadmin 
+# Keep the build files (but track with LFS)
+!src/frontend/react-dashboard/dist/

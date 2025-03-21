@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YRS Agentic Finance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background-color: #0a0e14;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .main-container {
+            text-align: center;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 2rem;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #3a7bd5, #00d2ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: #a0aec0;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(to right, #3a7bd5, #00d2ff);
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 3rem;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .footer {
+            position: fixed;
+            bottom: 1rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+        
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            width: 100%;
+        }
+        
+        .card {
+            background-color: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(58, 123, 213, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            width: 320px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            background-color: rgba(30, 41, 59, 0.8);
+            border-color: rgba(58, 123, 213, 0.5);
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.2rem;
+            background: linear-gradient(to right, #3a7bd5, #00d2ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: white;
+        }
+        
+        .card-description {
+            font-size: 1.05rem;
+            color: #a0aec0;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: white;
+            opacity: 0.9;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="particles" id="particles-js"></div>
+    
+    <div class="main-container">
+        <h1 class="logo">YRS Agentic Finance</h1>
+        <p class="tagline">Powered by AI Agents</p>
+        
+        <a href="/dashboard" class="btn">Enter Platform</a>
+        
+        <h2 class="section-title">AI-Powered Financial Intelligence</h2>
+        
+        <div class="cards-container">
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-newspaper"></i>
+                </div>
+                <h3 class="card-title">Finance News</h3>
+                <p class="card-description">Our AI agents continuously analyze financial news from thousands of sources to identify market-moving events.</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="card-title">Real-Time Analysis</h3>
+                <p class="card-description">Get instant insights on market movements with sophisticated algorithms that detect patterns humans might miss.</p>
+            </div>
+            
+            <div class="card">
+                <div class="card-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h3 class="card-title">Portfolio Insights</h3>
+                <p class="card-description">Advanced risk analytics and performance metrics help optimize your portfolio for maximum returns.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        &copy; 2025 YRS Agentic Finance. All rights reserved.
+    </div>
+    
+    <!-- Particle.js library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS("particles-js", {
+                "particles": {
+                    "number": {
+                        "value": 50,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#3a7bd5"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.2,
+                        "random": true,
+                        "anim": {
+                            "enable": true,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#3a7bd5",
+                        "opacity": 0.2,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+        });
+    </script>
+    
+    <!-- Fix for Font Awesome loading -->
+    <script>
+        // Replace font awesome script with a reliable CDN
+        const faScript = document.querySelector('script[src="https://kit.fontawesome.com/a076d05399.js"]');
+        if (faScript) {
+            faScript.remove();
+            const newScript = document.createElement('script');
+            newScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js';
+            newScript.integrity = 'sha512-Tn2m0TIpgVyTzzvmxLNuqbSJH3JP8jm+Cy3hvHrW7ndTDcJ1w5mBiksqDBb8GpE2ksktFvDB/ykZ0mDpsZj20w==';
+            newScript.crossOrigin = 'anonymous';
+            document.head.appendChild(newScript);
+        }
+    </script>
+</body>
+</html> 
