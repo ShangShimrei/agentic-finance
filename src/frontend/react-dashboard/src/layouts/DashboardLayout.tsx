@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import { 
   HomeIcon, 
@@ -7,8 +7,15 @@ import {
   BriefcaseIcon, 
   CogIcon,
   BellIcon,
-  MagnifyingGlassIcon
+  MagnifyingGlassIcon,
+  NewspaperIcon,
+  UserGroupIcon,
+  DocumentTextIcon,
+  SpeakerWaveIcon,
+  ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/outline'
+import ChatAssistant from '../components/ChatAssistant'
+import UserAccount from '../components/UserAccount'
 
 const navigation = [
   { name: 'Dashboard', href: '/', current: true },
@@ -19,55 +26,102 @@ const navigation = [
 
 const DashboardLayout = () => {
   const [searchQuery, setSearchQuery] = useState('')
+  const [chatOpen, setChatOpen] = useState(false)
+  
+  const toggleChat = () => {
+    setChatOpen(!chatOpen)
+    console.log("Chat toggled:", !chatOpen)
+  }
 
   return (
     <div className="flex h-screen bg-secondary-400">
       {/* Sidebar */}
-      <div className="w-64 bg-secondary-300 border-r border-secondary-200">
+      <div className="w-64 bg-secondary-300 border-r border-secondary-200 flex flex-col h-full">
         <div className="flex items-center px-6 py-4 h-16 border-b border-secondary-200">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 bg-primary-500 rounded-md flex items-center justify-center">
               <span className="text-white font-bold">YRS</span>
             </div>
-            <h1 className="text-xl font-bold text-white">Finance</h1>
+            <h1 className="text-2xl font-bold text-white">Finance</h1>
           </div>
         </div>
         
-        <nav className="mt-6 px-3 space-y-1">
-          <NavLink to="/" className={({isActive}) => 
-            `menu-item group ${isActive ? 'active' : ''}`
-          } end>
-            <HomeIcon className="sidebar-icon mr-3" />
-            <span>Dashboard</span>
-          </NavLink>
+        <div className="flex flex-col flex-grow justify-between">
+          <nav className="mt-6 px-3 space-y-1 text-base">
+            <NavLink to="/" className={({isActive}) => 
+              `menu-item group ${isActive ? 'active' : ''}`
+            } end>
+              <HomeIcon className="sidebar-icon mr-3" />
+              <span>Dashboard</span>
+            </NavLink>
+            
+            <NavLink to="/assets" className={({isActive}) => 
+              `menu-item group ${isActive ? 'active' : ''}`
+            }>
+              <CurrencyDollarIcon className="sidebar-icon mr-3" />
+              <span>Assets</span>
+            </NavLink>
+            
+            <NavLink to="/market" className={({isActive}) => 
+              `menu-item group ${isActive ? 'active' : ''}`
+            }>
+              <ChartBarIcon className="sidebar-icon mr-3" />
+              <span>Market</span>
+              <span className="ml-auto bg-primary-500 px-2 py-0.5 text-xs rounded-full text-white">New</span>
+            </NavLink>
+            
+            <NavLink to="/portfolio" className={({isActive}) => 
+              `menu-item group ${isActive ? 'active' : ''}`
+            }>
+              <BriefcaseIcon className="sidebar-icon mr-3" />
+              <span>Portfolio</span>
+            </NavLink>
+            
+            <NavLink to="/news" className={({isActive}) => 
+              `menu-item group ${isActive ? 'active' : ''}`
+            }>
+              <NewspaperIcon className="sidebar-icon mr-3" />
+              <span>News</span>
+            </NavLink>
+            
+            <NavLink to="/blog" className={({isActive}) => 
+              `menu-item group ${isActive ? 'active' : ''}`
+            }>
+              <DocumentTextIcon className="sidebar-icon mr-3" />
+              <span>Blog</span>
+            </NavLink>
+            
+            <NavLink to="/announcements" className={({isActive}) => 
+              `menu-item group ${isActive ? 'active' : ''}`
+            }>
+              <SpeakerWaveIcon className="sidebar-icon mr-3" />
+              <span>Announcements</span>
+            </NavLink>
+            
+            <NavLink to="/about" className={({isActive}) => 
+              `menu-item group ${isActive ? 'active' : ''}`
+            }>
+              <UserGroupIcon className="sidebar-icon mr-3" />
+              <span>About Us</span>
+            </NavLink>
+            
+            <div className="menu-item group">
+              <CogIcon className="sidebar-icon mr-3" />
+              <span>Settings</span>
+            </div>
+          </nav>
           
-          <NavLink to="/assets" className={({isActive}) => 
-            `menu-item group ${isActive ? 'active' : ''}`
-          }>
-            <CurrencyDollarIcon className="sidebar-icon mr-3" />
-            <span>Assets</span>
-          </NavLink>
-          
-          <NavLink to="/market" className={({isActive}) => 
-            `menu-item group ${isActive ? 'active' : ''}`
-          }>
-            <ChartBarIcon className="sidebar-icon mr-3" />
-            <span>Market</span>
-            <span className="ml-auto bg-primary-500 px-2 py-0.5 text-xs rounded-full text-white">New</span>
-          </NavLink>
-          
-          <NavLink to="/portfolio" className={({isActive}) => 
-            `menu-item group ${isActive ? 'active' : ''}`
-          }>
-            <BriefcaseIcon className="sidebar-icon mr-3" />
-            <span>Portfolio</span>
-          </NavLink>
-          
-          <div className="menu-item group">
-            <CogIcon className="sidebar-icon mr-3" />
-            <span>Settings</span>
+          {/* Ask Yuki button at bottom of sidebar */}
+          <div className="px-3 pb-6">
+            <div 
+              className="flex items-center justify-center bg-primary-500 hover:bg-primary-600 text-white rounded-lg py-4 px-4 cursor-pointer shadow-md transition-colors"
+              onClick={toggleChat}
+            >
+              <ChatBubbleLeftRightIcon className="h-6 w-6 text-white mr-3" />
+              <span className="text-lg font-semibold">Ask Yuki</span>
+            </div>
           </div>
-        </nav>
+        </div>
       </div>
       
       {/* Main Content */}
@@ -91,16 +145,12 @@ const DashboardLayout = () => {
               <span className="absolute top-1 right-1 h-2 w-2 bg-primary-500 rounded-full"></span>
             </button>
             
-            <div className="ml-4 flex items-center">
-              <img 
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                alt="User" 
-                className="h-8 w-8 rounded-full"
+            <div className="ml-4">
+              <UserAccount 
+                username="Shimrei" 
+                userType="Premium Account" 
+                avatar="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
               />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-white">John Doe</p>
-                <p className="text-xs text-gray-400">Premium Account</p>
-              </div>
             </div>
           </div>
         </header>
@@ -110,6 +160,9 @@ const DashboardLayout = () => {
           <Outlet />
         </main>
       </div>
+      
+      {/* Chat component */}
+      <ChatAssistant isOpen={chatOpen} onClose={() => setChatOpen(false)} />
     </div>
   )
 }

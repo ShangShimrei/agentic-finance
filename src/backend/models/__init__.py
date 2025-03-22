@@ -1,5 +1,5 @@
 """
-Portfolio management module for handling trade execution and portfolio tracking.
+Data models for the Agentic Finance platform.
 """
 
 from src.portfolio.portfolio_manager import PortfolioManager

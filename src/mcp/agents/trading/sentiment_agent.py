@@ -71,6 +71,9 @@ class SentimentAgent(BaseAgent):
         # Get sentiment data using MCP tool
         sentiment_data = self._get_sentiment_data(ticker)
         
+        # Get recent news using MCP tool
+        news_data = self._get_news_data(ticker)
+        
         # Extract overall sentiment score
         sentiment_score = sentiment_data.get("sentiment_score", 0)
         
@@ -96,7 +99,8 @@ class SentimentAgent(BaseAgent):
             weighted_score, 
             confidence, 
             sentiment_topics,
-            source_scores
+            source_scores,
+            news_data
         )
         
         # Share insights with other agents if signal is strong
@@ -119,14 +123,46 @@ class SentimentAgent(BaseAgent):
             Sentiment data
         """
         try:
-            result = self.call_tool("analyze_sentiment", ticker=ticker)
+            # Get sentiment analysis for each source with appropriate lookback periods
+            news_days = self.config["lookback_periods"]["news"]
+            
+            # Call the MCP sentiment analysis tool
+            result = self.call_tool("analyze_sentiment", ticker=ticker, source="all", days_back=news_days)
+            
             if "error" in result:
                 logger.error(f"Error getting sentiment for {ticker}: {result['error']}")
                 return self._generate_mock_sentiment_data(ticker)
+                
             return result
         except Exception as e:
             logger.error(f"Error getting sentiment for {ticker}: {e}")
             return self._generate_mock_sentiment_data(ticker)
+    
+    def _get_news_data(self, ticker: str) -> Dict[str, Any]:
+        """
+        Get recent news data for a ticker using MCP.
+        
+        Args:
+            ticker: Ticker symbol
+            
+        Returns:
+            News data
+        """
+        try:
+            # Get news for the ticker with appropriate lookback period
+            news_days = self.config["lookback_periods"]["news"]
+            
+            # Call the MCP news fetch tool
+            result = self.call_tool("fetch_news", ticker=ticker, days_back=news_days, max_results=10)
+            
+            if "error" in result:
+                logger.error(f"Error getting news for {ticker}: {result['error']}")
+                return {"articles": []}
+                
+            return result
+        except Exception as e:
+            logger.error(f"Error getting news for {ticker}: {e}")
+            return {"articles": []}
     
     def _generate_mock_sentiment_data(self, ticker: str) -> Dict[str, Any]:
         """
@@ -240,7 +276,8 @@ class SentimentAgent(BaseAgent):
                         sentiment_score: float, 
                         confidence: float, 
                         topics: List[str],
-                        source_scores: Dict[str, float]) -> Dict[str, Any]:
+                        source_scores: Dict[str, float],
+                        news_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Generate trading signal based on sentiment analysis.
         
@@ -250,76 +287,91 @@ class SentimentAgent(BaseAgent):
             confidence: Confidence in the sentiment analysis
             topics: List of sentiment topics
             source_scores: Dictionary of sentiment scores by source
+            news_data: Dictionary of recent news articles
             
         Returns:
-            Trading signal
+            Dictionary with trading signal
         """
-        thresholds = self.config["sentiment_thresholds"]
-        
-        # Determine action based on sentiment score
-        if sentiment_score >= thresholds["very_positive"]:
+        # Determine action based on sentiment thresholds
+        if sentiment_score >= self.config["sentiment_thresholds"]["very_positive"]:
             action = "BUY"
-            base_confidence = min(0.95, sentiment_score * 1.2)  # Boost confidence for very positive
-            rationale = f"Very positive sentiment detected"
-        elif sentiment_score >= thresholds["positive"]:
+            rationale = f"Very positive sentiment detected for {ticker}"
+        elif sentiment_score >= self.config["sentiment_thresholds"]["positive"]:
             action = "BUY"
-            base_confidence = sentiment_score
-            rationale = f"Positive sentiment detected"
-        elif sentiment_score <= thresholds["very_negative"]:
-            action = "SELL"
-            base_confidence = min(0.95, (1 - sentiment_score) * 1.2)  # Boost confidence for very negative
-            rationale = f"Very negative sentiment detected"
-        elif sentiment_score <= thresholds["negative"]:
-            action = "SELL"
-            base_confidence = 1 - sentiment_score
-            rationale = f"Negative sentiment detected"
-        else:
+            rationale = f"Positive sentiment detected for {ticker}"
+        elif sentiment_score >= self.config["sentiment_thresholds"]["neutral"]:
             action = "HOLD"
-            base_confidence = 0.5
-            rationale = f"Neutral sentiment detected"
+            rationale = f"Neutral sentiment detected for {ticker}"
+        elif sentiment_score >= self.config["sentiment_thresholds"]["negative"]:
+            action = "SELL"
+            rationale = f"Negative sentiment detected for {ticker}"
+        else:
+            action = "SELL"
+            rationale = f"Very negative sentiment detected for {ticker}"
         
-        # Adjust confidence based on our calculated confidence factor
-        adjusted_confidence = base_confidence * confidence
+        # Include source breakdown in rationale
+        source_breakdown = ", ".join([f"{source}: {score:.2f}" for source, score in source_scores.items()])
+        rationale += f". Source breakdown: {source_breakdown}"
         
-        # Add topics to rationale if available
+        # Include key topics in rationale
         if topics:
-            rationale += f" regarding: {', '.join(topics)}"
+            rationale += f". Key topics: {', '.join(topics)}"
         
-        # Add source information to rationale
-        if source_scores:
-            strongest_source = max(source_scores.items(), key=lambda x: x[1])
-            if strongest_source[0] == "news":
-                rationale += f". Particularly strong signals from news sources"
-            elif strongest_source[0] == "social_media":
-                rationale += f". Social media sentiment is particularly strong"
-            elif strongest_source[0] == "blogs":
-                rationale += f". Financial blogs showing strong sentiment"
+        # Include recent headlines if available
+        recent_articles = news_data.get("articles", [])
+        if recent_articles:
+            # Include up to 3 most recent article titles
+            headlines = [article.get("title", "") for article in recent_articles[:3]]
+            headline_text = "; ".join(headlines)
+            rationale += f". Recent headlines: {headline_text}"
         
-        # Build the signal
-        return {
+        # Build the signal dictionary
+        signal = {
             "ticker": ticker,
+            "timestamp": time.time(),
             "action": action,
-            "confidence": round(adjusted_confidence, 2),
-            "sentiment_score": round(sentiment_score, 2),
+            "confidence": confidence,
+            "sentiment_score": sentiment_score,
             "rationale": rationale,
-            "time_horizon": "SHORT",  # Sentiment is typically short-term
             "topics": topics,
-            "source_scores": {k: round(v, 2) for k, v in source_scores.items()}
+            "source_scores": source_scores
         }
+        
+        # Add recent headlines to the signal
+        if recent_articles:
+            signal["recent_headlines"] = [
+                {
+                    "title": article.get("title", ""),
+                    "source": article.get("source", ""),
+                    "url": article.get("url", ""),
+                    "published_at": article.get("published_at", "")
+                } 
+                for article in recent_articles[:5]  # Include up to 5 headlines
+            ]
+        
+        return signal
     
     def handle_message(self, message: Dict[str, Any]) -> None:
         """
-        Handle an incoming message from another agent.
+        Handle incoming messages from other agents.
         
         Args:
-            message: Message from another agent
+            message: Message dictionary
         """
-        super().handle_message(message)
-        
-        # Process messages from other agents
-        sender = message.get("sender", "Unknown")
-        content = message.get("message", "")
-        
-        if "Technical Analysis Agent" in sender or "Fundamental Analysis Agent" in sender:
-            logger.info(f"Received message from {sender}: {content}")
-            # We could use this to focus our sentiment analysis on specific tickers or aspects 
+        # Example of handling a message that asks for sentiment analysis
+        if message.get("type") == "request_sentiment":
+            ticker = message.get("ticker")
+            if ticker:
+                logger.info(f"Received request for sentiment analysis of {ticker}")
+                analysis = self.analyze(ticker)
+                self.send_message(
+                    message={
+                        "type": "sentiment_response",
+                        "ticker": ticker,
+                        "sentiment_score": analysis["sentiment_score"],
+                        "action": analysis["action"],
+                        "confidence": analysis["confidence"],
+                        "rationale": analysis["rationale"]
+                    },
+                    recipients=[message.get("sender")]
+                ) 

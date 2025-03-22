@@ -10,8 +10,13 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import random
+import os
+
+from src.data_providers.news_api import NewsAPIProvider
 
 logger = logging.getLogger(__name__)
+# Create a global instance of NewsAPIProvider
+news_api = NewsAPIProvider(api_key=os.environ.get("NEWSAPI_KEY"))
 
 def calculate_indicators(ticker: str, 
                         price_data: List[float], 
@@ -139,51 +144,142 @@ def fetch_market_data(ticker: str, period: str = "1d", lookback: int = 30) -> Di
         "timestamp": time.time()
     }
 
-def analyze_sentiment(ticker: str, source: str = "all") -> Dict[str, Any]:
+def analyze_sentiment(ticker: str, source: str = "all", days_back: int = 7) -> Dict[str, Any]:
     """
-    Analyze market sentiment for a ticker.
-    This is a mock implementation that would normally call a sentiment analysis service.
+    Analyze market sentiment for a ticker using news and social media data.
     
     Args:
         ticker: Ticker symbol
-        source: Source of sentiment data ("twitter", "news", "reddit", "all")
+        source: Source of sentiment data ("news", "social_media", "blogs", "all")
+        days_back: Number of days to look back for sentiment analysis
         
     Returns:
         Sentiment analysis results
     """
-    logger.info(f"Analyzing sentiment for {ticker} from {source}")
+    logger.info(f"Analyzing sentiment for {ticker} from {source} for past {days_back} days")
     
-    # Mock sentiment analysis results
-    sentiment_score = random.random() * 2 - 1  # Between -1 and 1
+    try:
+        # Use the News API provider to get sentiment analysis
+        if source == "news" or source == "all":
+            sentiment_data = news_api.analyze_sentiment(ticker, days_back)
+            
+            # Format the response
+            return {
+                "ticker": ticker,
+                "sentiment_score": sentiment_data['sentiment_score'],
+                "source_scores": sentiment_data['source_scores'],
+                "topics": sentiment_data['topics'],
+                "volume": sentiment_data['volume'],
+                "volatility": sentiment_data['volatility'],
+                "sentiment": sentiment_data['sentiment'],
+                "article_count": sentiment_data.get('article_count', 0),
+                "timestamp": time.time()
+            }
+        else:
+            # For other sources, fall back to the original mock implementation
+            # Mock sentiment analysis results
+            sentiment_score = random.random()  # Between 0 and 1
+            
+            # Generate different scores for different sources
+            source_scores = {}
+            if source == "all" or source == "social_media":
+                source_scores["social_media"] = random.random()
+            if source == "all" or source == "blogs":
+                source_scores["blogs"] = random.random()
+            
+            # Generate mock sentiment topics
+            topics = []
+            if sentiment_score > 0.7:
+                topics = ["growth", "innovation", "earnings", "expansion"]
+            elif sentiment_score < 0.3:
+                topics = ["risk", "competition", "expenses", "regulation"]
+            else:
+                topics = ["neutral", "mixed", "steady", "stable"]
+            
+            # Randomly select 2-3 topics
+            selected_topics = random.sample(topics, min(len(topics), random.randint(2, 3)))
+            
+            return {
+                "ticker": ticker,
+                "sentiment_score": round(sentiment_score, 2),
+                "source_scores": {k: round(v, 2) for k, v in source_scores.items()},
+                "topics": selected_topics,
+                "volume": random.randint(100, 10000),
+                "volatility": random.random() * 0.5,
+                "sentiment": _score_to_category(sentiment_score),
+                "article_count": random.randint(20, 100),
+                "timestamp": time.time()
+            }
+    except Exception as e:
+        logger.error(f"Error analyzing sentiment for {ticker}: {e}")
+        # Fall back to mock data in case of error
+        return _generate_mock_sentiment(ticker)
+
+def _score_to_category(score: float) -> str:
+    """
+    Convert a sentiment score to a category.
     
-    # Generate different scores for different sources
-    source_scores = {}
-    if source == "all" or source == "twitter":
-        source_scores["twitter"] = sentiment_score * (0.8 + random.random() * 0.4)
-    if source == "all" or source == "news":
-        source_scores["news"] = sentiment_score * (0.7 + random.random() * 0.6)
-    if source == "all" or source == "reddit":
-        source_scores["reddit"] = sentiment_score * (0.6 + random.random() * 0.8)
-    
-    # Generate mock sentiment topics
-    topics = []
-    if sentiment_score > 0.3:
-        topics = ["growth", "innovation", "earnings", "expansion"]
-    elif sentiment_score < -0.3:
-        topics = ["risk", "competition", "expenses", "regulation"]
+    Args:
+        score: Sentiment score (0-1)
+        
+    Returns:
+        Sentiment category
+    """
+    if score >= 0.7:
+        return "Very Positive"
+    elif score >= 0.55:
+        return "Positive"
+    elif score >= 0.45:
+        return "Neutral"
+    elif score >= 0.3:
+        return "Negative"
     else:
-        topics = ["neutral", "mixed", "steady", "stable"]
+        return "Very Negative"
+
+def _generate_mock_sentiment(ticker: str) -> Dict[str, Any]:
+    """
+    Generate mock sentiment data as a fallback.
     
-    # Randomly select 2-3 topics
-    selected_topics = random.sample(topics, min(len(topics), random.randint(2, 3)))
+    Args:
+        ticker: Ticker symbol
+        
+    Returns:
+        Mock sentiment data
+    """
+    # Generate a random sentiment score between 0 and 1
+    sentiment_score = random.random()
+    
+    # Generate source scores
+    source_scores = {
+        "news": random.random(),
+        "social_media": random.random(),
+        "blogs": random.random()
+    }
+    
+    # Generate mock topics
+    possible_topics = [
+        "Earnings", "Product Launch", "Management Change", 
+        "Regulatory Issues", "Market Trend", "Competitor News",
+        "Innovation", "Financial Health", "Partnership", "Acquisition"
+    ]
+    
+    # Select 2-4 random topics
+    num_topics = random.randint(2, 4)
+    topics = random.sample(possible_topics, min(num_topics, len(possible_topics)))
+    
+    # Generate mock volume and volatility
+    volume = random.randint(50, 500)
+    volatility = random.random() * 0.5
     
     return {
         "ticker": ticker,
-        "sentiment_score": round(sentiment_score, 2),
-        "source_scores": {k: round(v, 2) for k, v in source_scores.items()},
-        "topics": selected_topics,
-        "volume": random.randint(100, 10000),
-        "sentiment": _score_to_sentiment(sentiment_score),
+        "sentiment_score": sentiment_score,
+        "sentiment": _score_to_category(sentiment_score),
+        "source_scores": source_scores,
+        "topics": topics,
+        "volume": volume,
+        "volatility": volatility,
+        "article_count": random.randint(20, 100),
         "timestamp": time.time()
     }
 
@@ -378,15 +474,45 @@ def _get_mock_indicators(ticker: str) -> Dict[str, Any]:
         }
     }
 
-def _score_to_sentiment(score: float) -> str:
-    """Convert a sentiment score to a sentiment label."""
-    if score > 0.7:
-        return "Very Positive"
-    elif score > 0.3:
-        return "Positive"
-    elif score > -0.3:
-        return "Neutral"
-    elif score > -0.7:
-        return "Negative"
-    else:
-        return "Very Negative" 
+def fetch_news(ticker: str, days_back: int = 7, max_results: int = 20) -> Dict[str, Any]:
+    """
+    Fetch news articles for a specific ticker.
+    
+    Args:
+        ticker: Ticker symbol to get news for
+        days_back: Number of days to look back
+        max_results: Maximum number of articles to return
+        
+    Returns:
+        Dictionary with news articles and metadata
+    """
+    logger.info(f"Fetching news for {ticker} from the past {days_back} days")
+    
+    try:
+        # Use the NewsAPIProvider to fetch news
+        news_data = news_api.get_news(ticker, days_back, max_results=max_results)
+        
+        # Select only the most relevant articles
+        articles = news_data.get('articles', [])
+        
+        # Format the response
+        return {
+            "ticker": ticker,
+            "total_results": news_data.get('total_results', len(articles)),
+            "articles": articles[:max_results],  # Limit to max_results
+            "sources": news_data.get('sources', []),
+            "keywords": news_data.get('top_keywords', []),
+            "date_range": news_data.get('date_range', {
+                "from": (datetime.now() - timedelta(days=days_back)).strftime('%Y-%m-%d'),
+                "to": datetime.now().strftime('%Y-%m-%d')
+            })
+        }
+    
+    except Exception as e:
+        logger.error(f"Error fetching news for {ticker}: {e}")
+        return {
+            "ticker": ticker,
+            "error": str(e),
+            "articles": [],
+            "total_results": 0
+        } 

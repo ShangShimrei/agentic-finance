@@ -1,5 +1,5 @@
 """
-Trading simulator module for backtesting trading strategies.
+Core functionality for the Agentic Finance platform.
 """
 
 from src.simulator.trading_simulator import TradingSimulator

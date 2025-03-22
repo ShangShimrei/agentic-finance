@@ -7,6 +7,9 @@ import Market from './pages/Market'
 import Portfolio from './pages/Portfolio'
 import Transactions from './pages/Transactions'
 import News from './pages/News'
+import Blog from './pages/Blog'
+import Announcements from './pages/Announcements'
+import About from './pages/About'
 import Settings from './pages/Settings'
 import Help from './pages/Help'
 import NotFound from './pages/NotFound'
@@ -22,6 +25,9 @@ function App() {
         <Route path="portfolio" element={<Portfolio />} />
         <Route path="transactions" element={<Transactions />} />
         <Route path="news" element={<News />} />
+        <Route path="blog" element={<Blog />} />
+        <Route path="announcements" element={<Announcements />} />
+        <Route path="about" element={<About />} />
         <Route path="settings" element={<Settings />} />
         <Route path="help" element={<Help />} />
       </Route>

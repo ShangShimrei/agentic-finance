@@ -1,46 +1,31 @@
 """
-Launch the YRS Agentic Finance application from the root directory.
+Run the YRS Agentic Finance Application.
+This script starts the unified server, which serves both the landing page and the React dashboard.
 """
-import os
 import sys
+import os
 import subprocess
-from pathlib import Path
+import webbrowser
 
-if __name__ == "__main__":
-    # Get the path to the frontend directory
-    frontend_dir = Path(__file__).parent / "src" / "frontend"
+def main():
+    """Run the application."""
+    print("=== YRS Agentic Finance Application ===")
+    print("Starting unified server...")
     
-    if not frontend_dir.exists():
-        print(f"Error: Frontend directory not found at {frontend_dir}")
+    # Path to the unified server script
+    unified_server_path = os.path.join("src", "backend", "unified_server.py")
+    
+    # Check if the file exists
+    if not os.path.exists(unified_server_path):
+        print(f"Error: Unified server script not found at {unified_server_path}")
         sys.exit(1)
     
-    # Change to the frontend directory
-    os.chdir(frontend_dir)
+    print("Opening application in your browser...")
+    print("Dashboard will be available at: http://localhost:8000/dashboard")
+    print("Press CTRL+C to stop the server.")
     
-    # Import and run the unified server
-    try:
-        sys.path.append(str(frontend_dir))
-        from unified_server import run_server
-        
-        print("=" * 50)
-        print("  YRS Agentic Finance Application")
-        print("  Starting unified server...")
-        print("=" * 50)
-        print("  The application will open in your default browser.")
-        print("  Press Ctrl+C to stop the server.")
-        print("=" * 50)
-        
-        # Run the server
-        run_server()
-    except ImportError as e:
-        print(f"Error importing unified_server: {e}")
-        print("Running the server script directly...")
-        
-        # If import fails, try to run the script directly using subprocess
-        run_script_path = frontend_dir / "run_app.py"
-        try:
-            subprocess.run([sys.executable, str(run_script_path)], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Error running script: {e}")
-        except Exception as e:
-            print(f"Unexpected error: {e}") 
+    # Run the unified server script
+    subprocess.run([sys.executable, unified_server_path])
+
+if __name__ == "__main__":
+    main() 

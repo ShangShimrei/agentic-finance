@@ -15,6 +15,9 @@ import sys
 import re
 from pathlib import Path
 
+# Add the src directory to the path so we can import modules
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -29,7 +32,7 @@ logger = logging.getLogger(__name__)
 # Constants
 PORT = 8000
 HOST = 'localhost'
-REACT_BUILD_DIR = Path(__file__).parent / "react-dashboard" / "dist"
+REACT_BUILD_DIR = Path(__file__).parent.parent / "frontend" / "react-dashboard" / "dist"
 
 class UnifiedServerHandler(http.server.SimpleHTTPRequestHandler):
     """Custom handler for serving both landing page and dashboard."""
@@ -73,7 +76,7 @@ class UnifiedServerHandler(http.server.SimpleHTTPRequestHandler):
         """Serve the landing page."""
         try:
             # Get the path to the landing page HTML file
-            landing_page_path = Path(__file__).parent / "landing_page.html"
+            landing_page_path = Path(__file__).parent.parent / "frontend" / "assets" / "landing_page.html"
             
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -160,7 +163,7 @@ class UnifiedServerHandler(http.server.SimpleHTTPRequestHandler):
 def update_landing_page_link():
     """Update the landing page to point to /dashboard instead of external URL."""
     try:
-        landing_page_path = Path(__file__).parent / "landing_page.html"
+        landing_page_path = Path(__file__).parent.parent / "frontend" / "assets" / "landing_page.html"
         
         with open(landing_page_path, 'r', encoding='utf-8') as file:
             content = file.read()
@@ -181,10 +184,10 @@ def run_server():
     update_landing_page_link()
     
     # Check if the React build exists
-    react_build_dir = Path(__file__).parent / "react-dashboard" / "dist"
+    react_build_dir = Path(__file__).parent.parent / "frontend" / "react-dashboard" / "dist"
     if not react_build_dir.exists() or not (react_build_dir / "index.html").exists():
         logger.warning("React dashboard build not found. The /dashboard route may not work.")
-        logger.info("To build the React dashboard, run: cd react-dashboard && npm run build")
+        logger.info("To build the React dashboard, run: cd frontend/react-dashboard && npm run build")
     else:
         logger.info(f"Found React dashboard build at {react_build_dir}")
         

@@ -1,5 +1,5 @@
 """
-Risk Manager module for assessing and adjusting trading signals based on risk metrics.
+Services for the Agentic Finance platform.
 """
 
 from src.risk_manager.risk_manager import RiskManager

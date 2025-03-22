@@ -1,5 +1,5 @@
 """
-Agents module for trading strategy agents and orchestration.
+Agent implementations for the Agentic Finance platform.
 """
 
 from src.agents.agent_orchestrator import AgentOrchestrator
