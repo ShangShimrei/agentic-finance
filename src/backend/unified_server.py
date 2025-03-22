@@ -30,8 +30,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Constants
-PORT = 8000
-HOST = 'localhost'
+PORT = int(os.environ.get("PORT", 8000))
+HOST = os.environ.get("HOST", "0.0.0.0")  # Use 0.0.0.0 to listen on all interfaces
 REACT_BUILD_DIR = Path(__file__).parent.parent / "frontend" / "react-dashboard" / "dist"
 
 class UnifiedServerHandler(http.server.SimpleHTTPRequestHandler):
@@ -206,12 +206,16 @@ def run_server():
     try:
         with socketserver.TCPServer((HOST, PORT), handler) as httpd:
             server_url = f"http://{HOST}:{PORT}"
+            if HOST == "0.0.0.0":
+                server_url = f"http://localhost:{PORT}"  # For local development message
+                
             logger.info(f"Unified server started at {server_url}")
             logger.info(f"Landing page available at {server_url}")
             logger.info(f"Dashboard available at {server_url}/dashboard")
             
-            # Open the browser
-            webbrowser.open(server_url)
+            # Open the browser only in development, not in production
+            if os.environ.get("RENDER") != "true":
+                webbrowser.open(server_url)
             
             # Handle shutdown gracefully
             def signal_handler(sig, frame):

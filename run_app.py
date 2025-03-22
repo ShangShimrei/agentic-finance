@@ -20,9 +20,8 @@ def main():
         print(f"Error: Unified server script not found at {unified_server_path}")
         sys.exit(1)
     
-    print("Opening application in your browser...")
-    print("Dashboard will be available at: http://localhost:8000/dashboard")
-    print("Press CTRL+C to stop the server.")
+    print("Server starting...")
+    print("Dashboard will be available at the root URL")
     
     # Run the unified server script
     subprocess.run([sys.executable, unified_server_path])
