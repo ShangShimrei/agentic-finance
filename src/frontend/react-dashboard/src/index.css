@@ -4,25 +4,27 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
   html {
-    font-size: 16px;
-  }
-  
-  @media (min-width: 768px) {
-    html {
-      font-size: 18px;
-    }
+    font-size: 18px;
   }
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: white;
+  background-color: #131926;
+  overflow: hidden;
+  height: 100vh;
 }
 
 code {
@@ -30,40 +32,91 @@ code {
     monospace;
 }
 
+@layer components {
+  .menu-item {
+    @apply flex items-center px-3 py-2.5 text-base font-medium text-gray-400 hover:text-white rounded-md transition-colors duration-200;
+  }
+
+  .menu-item.active {
+    @apply bg-secondary-200 text-white;
+  }
+
+  .sidebar-icon {
+    @apply h-5 w-5 text-gray-400 group-hover:text-white;
+  }
+
+  .menu-item.active .sidebar-icon {
+    @apply text-white;
+  }
+
+  /* Mobile specific fixes */
+  @media (max-width: 768px) {
+    .h-screen {
+      height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+    }
+    
+    /* Ensure main content is always visible */
+    .overflow-auto {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}
+
+/* Custom colors */
 :root {
-  --primary-50: #eef2ff;
-  --primary-100: #e0e7ff;
-  --primary-200: #c7d2fe;
-  --primary-300: #a5b4fc;
-  --primary-400: #818cf8;
-  --primary-500: #6366f1;
-  --primary-600: #4f46e5;
-  --primary-700: #4338ca;
-  --primary-800: #3730a3;
-  --primary-900: #312e81;
+  --color-primary-500: #4F46E5;
+  --color-primary-600: #3730A3;
+  --color-secondary-200: #1B2435;
+  --color-secondary-300: #161F2F;
+  --color-secondary-400: #131926;
+}
+
+.bg-primary-500 {
+  background-color: var(--color-primary-500);
+}
+
+.bg-primary-600 {
+  background-color: var(--color-primary-600);
+}
+
+.bg-secondary-200 {
+  background-color: var(--color-secondary-200);
+}
+
+.bg-secondary-300 {
+  background-color: var(--color-secondary-300);
+}
+
+.bg-secondary-400 {
+  background-color: var(--color-secondary-400);
+}
+
+.border-secondary-200 {
+  border-color: var(--color-secondary-200);
+}
+
+.text-primary-500 {
+  color: var(--color-primary-500);
+}
+
+/* Fix for mobile browsers with dynamic viewport heights */
+@media (max-width: 768px) {
+  :root {
+    --app-height: 100%;
+  }
   
-  --secondary-50: #2a3042;
-  --secondary-100: #262b3c;
-  --secondary-200: #222736;
-  --secondary-300: #1e2230;
-  --secondary-400: #1a1d2a;
-  --secondary-500: #161924;
-  --secondary-600: #12141e;
-  --secondary-700: #0e1018;
-  --secondary-800: #0a0c12;
-  --secondary-900: #06080c;
-}
-
-.menu-item {
-  @apply flex items-center py-3 px-4 font-medium text-base text-gray-300 hover:bg-secondary-400 rounded-md transition-colors;
-}
-
-.menu-item.active {
-  @apply bg-primary-500 text-white;
-}
-
-.sidebar-icon {
-  @apply h-5 w-5 text-current;
+  html, body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+  
+  #root {
+    height: 100vh;
+    height: var(--app-height);
+    overflow-x: hidden;
+  }
 }
 
 /* Chat typing animation */

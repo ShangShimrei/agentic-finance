@@ -41,11 +41,11 @@ const DashboardLayout = () => {
   }
 
   return (
-    <div className="flex h-screen bg-secondary-400 relative">
+    <div className="flex flex-col md:flex-row h-screen bg-secondary-400 relative">
       {/* Mobile Menu Button - Only shown on mobile */}
       <button 
         onClick={toggleSidebar}
-        className="md:hidden absolute top-4 left-4 z-50 p-2 rounded-md bg-secondary-300 text-white"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-md bg-secondary-300 text-white"
       >
         {sidebarOpen ? (
           <XMarkIcon className="h-6 w-6" />
@@ -58,7 +58,7 @@ const DashboardLayout = () => {
       <div className={`
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} 
         transform transition-transform duration-300 ease-in-out
-        fixed md:relative z-40 w-64 bg-secondary-300 border-r border-secondary-200 flex flex-col h-full
+        fixed md:relative z-40 w-64 md:w-64 bg-secondary-300 border-r border-secondary-200 flex flex-col h-full
       `}>
         <div className="flex items-center px-6 py-4 h-16 border-b border-secondary-200">
           <div className="flex items-center gap-2">
@@ -148,7 +148,7 @@ const DashboardLayout = () => {
       </div>
       
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className={`flex-1 flex flex-col overflow-hidden w-full ${sidebarOpen ? 'md:ml-0' : 'ml-0 md:ml-0'}`}>
         {/* Top Bar */}
         <header className="h-16 bg-secondary-300 border-b border-secondary-200 flex items-center justify-between px-6">
           <div className="hidden md:flex items-center bg-secondary-200 rounded-md px-3 py-1.5 w-96">
